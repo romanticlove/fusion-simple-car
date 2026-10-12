@@ -1,6 +1,6 @@
-"""Build every part in lib/layout.py PARTS, lock them together, and check for collisions.
+"""Build every part in layout.py PARTS, lock them together, and check for collisions.
 
-Run it via the loader (see CLAUDE.md) after changing layout.py or any part that touches another.
+Run it via the loader (see template/RULES.md) after changing layout.py or any part that touches another.
 Prints every pair of bodies from different parts that overlap. Anything > ~0.01 mm^3 is a real clash.
 """
 import importlib
@@ -8,7 +8,8 @@ import itertools
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "lib"))
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path[:0] = [os.path.join(ROOT, "template", "lib"), ROOT]
 import fusion_helpers as fh  # noqa: E402
 import layout as L  # noqa: E402
 

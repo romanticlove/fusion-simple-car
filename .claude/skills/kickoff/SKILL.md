@@ -26,19 +26,19 @@ If something is marginal, say so plainly and propose a plan B. Log every key cho
 - `CLAUDE.md` → `## Project` section.
 - `hardware.md` → one row per bought part with real sizes (mark "approx., measure").
 - `reference/README.md` → real-world size table (real plus scaled), if it's a model.
-- `lib/layout.py` →
+- `layout.py` →
   - `ORIGIN` description
   - `MAIN` (overall sizes, axle/part positions)
   - first `INTERFACES` (how the major parts connect: screw size and hole coordinates)
   - planned `PARTS` order
-  - Leave `FIT` at defaults until the fit test is printed.
+  - Leave `FIT` empty until the fit test is printed.
 
 ## 4. Blocks model
 Write `parts/_blocks/blocks.py`: one component `blocks` with simple solids (fh.cyl / fh.box) for every major
-part and bought component, positioned from `layout.py`. Run it via the loader in CLAUDE.md. Take an iso screenshot plus
+part and bought component, positioned from `layout.py`. Run it via the loader in template/RULES.md. Take an iso screenshot plus
 the side/top views that matter, compare them with the reference photos, and adjust `layout.py` with the user until the proportions look right.
 
 ## 5. Hand-off
-- Tell the user to print `parts/_fit-test` first. Adjust `P["holes"]` in it to the project's real hardware (bearing OD, shaft Ø, motor body) and run it.
+- Tell the user to print the fit test (`template/fit_test.py`) first. Add the project's real hardware sizes (bearing OD, shaft Ø, motor body) to `layout.FIT_TEST_HOLES`, then run it.
 - Suggest the first part to build with `/new-part`, usually the one most other parts connect to (chassis, frame, base).
 - Offer to commit.

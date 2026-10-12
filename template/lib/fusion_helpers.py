@@ -4,10 +4,13 @@ Fusion's API works in centimeters internally. Every helper here takes
 millimeters and converts, so part scripts can think in mm only.
 
 Part scripts (parts/<name>/<name>.py) import this with:
-    LIB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "lib")
-    sys.path.insert(0, os.path.normpath(LIB))
+    ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+    sys.path[:0] = [os.path.join(ROOT, "template", "lib"), ROOT]
     import fusion_helpers as fh
+    import layout as L
     importlib.reload(fh)   # Fusion keeps its Python process alive between runs
+    importlib.reload(L)
+    F = fh.fits(L)         # printer fits: template defaults + this project's overrides
 """
 import math
 import os
@@ -15,8 +18,26 @@ import os
 import adsk.core
 import adsk.fusion
 
-REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # template/lib -> repo root
 EXPORTS = os.path.join(REPO, "exports")
+
+# Printer / material fits. Projects override individual keys in layout.py FIT (tuned by the fit test);
+# new keys added here later reach every project without touching its layout.py.
+FIT_DEFAULTS = {
+    "clearance": 0.2,    # sliding fit, per side
+    "press": 0.0,        # added to a hole diameter for a press fit (bearings, pins)
+    "m2_tap": 1.8,
+    "m2_clear": 2.2,
+    "m3_tap": 2.7,
+    "m3_clear": 3.2,
+    "wall": 1.6,         # default wall
+    "detail_min": 0.8,   # smallest printable feature
+}
+
+
+def fits(layout_module):
+    """FIT_DEFAULTS overridden by the project's layout.FIT."""
+    return {**FIT_DEFAULTS, **getattr(layout_module, "FIT", {})}
 
 
 def mm(v):

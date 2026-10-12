@@ -2,7 +2,10 @@
 
 Print it once per printer/material before any real part. For each row, find the hole that fits best
 (a screw self-taps without splitting, a bearing presses in firmly, a shaft slides), then put
-nominal + that offset into lib/layout.py FIT. Edit P["holes"] to test the hardware your project uses.
+the values that differ from the defaults into layout.py FIT.
+
+TEMPLATE-OWNED: don't edit this in a project. Add the project's own hardware sizes (bearing OD, shaft Ø,
+motor body) to layout.py FIT_TEST_HOLES instead.
 
 Print orientation: flat on the bed, labels up, no supports.
 """
@@ -13,24 +16,23 @@ import sys
 import adsk.core
 import adsk.fusion
 
-LIB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "lib")
-sys.path.insert(0, os.path.normpath(LIB))
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path[:0] = [os.path.join(ROOT, "template", "lib"), ROOT]
 import fusion_helpers as fh  # noqa: E402
 import layout as L  # noqa: E402
 
 importlib.reload(fh)
 importlib.reload(L)
+F = fh.fits(L)
 
 # All sizes in mm. Change here and re-run - the component is rebuilt from scratch.
 P = {
     "holes": [                       # (label, nominal diameter)
-        ("M2 tap", L.FIT["m2_tap"]),
-        ("M2 clr", L.FIT["m2_clear"]),
-        ("M3 tap", L.FIT["m3_tap"]),
-        ("M3 clr", L.FIT["m3_clear"]),
-        ("D8", 8.0),
-        ("D16", 16.0),
-    ],
+        ("M2 tap", F["m2_tap"]),
+        ("M2 clr", F["m2_clear"]),
+        ("M3 tap", F["m3_tap"]),
+        ("M3 clr", F["m3_clear"]),
+    ] + list(getattr(L, "FIT_TEST_HOLES", [])),
     "offsets": [-0.1, 0.0, 0.1, 0.2],
     "thickness": 4.0,
     "gap": 4.0,           # material between holes
