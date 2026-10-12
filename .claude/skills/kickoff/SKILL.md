@@ -24,6 +24,8 @@ If something is marginal, say so plainly and propose a plan B. Log every key cho
 
 ## 3. Fill the project files
 - `CLAUDE.md` → `## Project` section.
+- `README.md` → replace the title and intro paragraphs with the project's name and a short description. Keep the
+  "Pull template updates", "Who owns which file" and "More" sections, since they still apply to the project.
 - `hardware.md` → one row per bought part with real sizes (mark "approx., measure").
 - `reference/README.md` → real-world size table (real plus scaled), if it's a model.
 - `layout.py` →
